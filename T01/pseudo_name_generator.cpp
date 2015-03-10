@@ -1,9 +1,9 @@
-#include "generator.h"
+#include "pseudo_name_generator.h"
 #include "fstream"
 #include "iostream"
 
 
-Generator::Generator(std::string fileName) {
+PseudoNameGenerator::PseudoNameGenerator(std::string fileName) {
 
     srand (time(NULL));
 
@@ -16,7 +16,7 @@ Generator::Generator(std::string fileName) {
     input.close();
 }
 
-std::string Generator::getRandomName() {
+std::string PseudoNameGenerator::getRandomName() {
     int rd = rand() % doubleList.getSize();
     cout << rd;
     return doubleList.getByIndex(rd)->getValue();

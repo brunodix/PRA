@@ -7,10 +7,10 @@
 
 using namespace std;
 
-class Generator {
+class PseudoNameGenerator {
     DoubleList doubleList;
 public:
-    Generator(std::string fileName);
+    PseudoNameGenerator(std::string fileName);
     std::string getRandomName();
 };
 
