@@ -8,16 +8,15 @@ class QueueNode {
 	///Referencia do ultimo para agilizar inserção
 	QueueNode<T> *last;
 	public:
-	QueueNode(T);
+	QueueNode(T _value) { value = _value; };
 };
 
 template <class NT>
 class Queue {
 	QueueNode<NT> *first;
 	public:
-		void add(QueueNode<NT> *node);
-		QueueNode<NT>* get();
+		void add(QueueNode<NT> *node) {};
+		QueueNode<NT>* get() {};
 };
-
 
 #endif
