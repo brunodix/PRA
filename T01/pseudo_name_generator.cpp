@@ -7,7 +7,7 @@ PseudoNameGenerator::PseudoNameGenerator(std::string fileName) {
 
     srand (time(NULL));
 
-    ifstream input(fileName );
+    ifstream input(fileName.c_str() );
 
     for( std::string line; getline( input, line ); )
     {
