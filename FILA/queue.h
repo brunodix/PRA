@@ -14,7 +14,7 @@ class QueueNode {
 template <class NT>
 class Queue {
 	QueueNode<NT> *first;
-	///Referencia do ultimo para agilizar inserção
+	///Referência do ultimo para agilizar inserção
 	QueueNode<NT> *last;
 	public:
 		void queue(QueueNode<NT> *node) {
