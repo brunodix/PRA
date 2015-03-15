@@ -10,6 +10,7 @@ class Student {
 private:
 public:
     Student(int _enrollNumber, std::string _name, double *_score, int _absence);
+    Student(){};
 
 private:
 /// Número da matrícula
@@ -26,6 +27,7 @@ private:
     StudentStatus status;
 
 public:
+    char * toString();
 
 };
 

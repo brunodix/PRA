@@ -9,7 +9,6 @@ PseudoNumberGenerator::PseudoNumberGenerator(int start, int end) {
 }
 
 int PseudoIntegerGenerator::getNumber() {
-    int f = rand();
     return getRangeStart() + (rand() % getRangeEnd());
 };
 

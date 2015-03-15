@@ -18,6 +18,10 @@ PseudoNameGenerator::PseudoNameGenerator(std::string fileName) {
 
 std::string PseudoNameGenerator::getRandomName() {
     int rd = rand() % doubleList.getSize();
-    cout << rd;
     return doubleList.getByIndex(rd)->getValue();
+}
+
+PseudoNameGenerator::~PseudoNameGenerator() {
+    doubleList.clear();
+    delete(&doubleList);
 }

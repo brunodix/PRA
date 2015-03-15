@@ -1,5 +1,5 @@
 #include "student.h"
-#include "student_status.h"
+#include <stdio.h>
 
 
 Student::Student(int _enrollNumber, std::string _name, double *_score, int _absence) {
@@ -21,4 +21,10 @@ Student::Student(int _enrollNumber, std::string _name, double *_score, int _abse
         total = _score[i];
     }
     average = total / 4;
+}
+
+char* Student::toString() {
+    char *str;
+    sprintf(str, "Matricula: %d | Faltas: %d | Nome: %s | Nota 1: %0.2f | Nota 2: %0.2f | Nota 3: %0.2f | Nota 4: %0.2f | Média: %0.2f | Situação: %d", enrollNumber, absence, name, score[0], score[1], score[2], score[3], average, status);
+    return str;
 }

@@ -19,6 +19,7 @@ private:
 public:
     Student* getStochastic();
     StudentFactory();
+    ~StudentFactory();
 };
 
 
@@ -40,4 +41,11 @@ StudentFactory::StudentFactory() {
     surnameGenerator = new PseudoNameGenerator("surnames.txt");
     absenceGenerator = new PseudoIntegerGenerator(0, 50);
     scoreGenerator = new PseudoDoubleGenerator(0, 10);
+}
+
+StudentFactory::~StudentFactory() {
+    delete(nameGenerator);
+    delete(surnameGenerator);
+    delete(absenceGenerator);
+    delete(scoreGenerator);
 }

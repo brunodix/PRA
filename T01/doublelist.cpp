@@ -17,6 +17,7 @@ void DoubleList::add(Node *node) {
         first = node;
         last = node;
     } else {
+        node->setPrior(node);
         last->setNext(node);
         last = node;
     }

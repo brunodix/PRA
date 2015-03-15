@@ -11,6 +11,7 @@ class PseudoNameGenerator {
     DoubleList doubleList;
 public:
     PseudoNameGenerator(std::string fileName);
+    ~PseudoNameGenerator();
     std::string getRandomName();
 };
 
