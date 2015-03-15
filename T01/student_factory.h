@@ -27,23 +27,11 @@ public:
 Student *StudentFactory::getStochastic() {
     std:string str = nameGenerator->getRandomName() + " " + surnameGenerator->getRandomName();
     double score[4];
-    double total;
     for (int i = 0; i < 4; i++) {
         score[i] = scoreGenerator->getNumber();
-        total = score[i];
     }
-    double average = total/4;
-
-    StudentStatus status;
-    if (average > 7) {
-        status = StudentStatus::APPROVED;
-    } else if (average > 4) {
-        status = StudentStatus::EXAM;
-    } else {
-        status = StudentStatus::REPROVED;
-    }
-    int abscence = absenceGenerator->getNumber();
-    Student *student = new Student(++counter, str.c_str(), score, abscence, status);
+    int absence = absenceGenerator->getNumber();
+    Student *student = new Student(++counter, str, score, absence);
     return student;
 }
 

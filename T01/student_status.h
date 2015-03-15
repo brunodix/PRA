@@ -1,0 +1,5 @@
+
+#ifndef STUDENTSTATUS_H
+#define STUDENTSTATUS_H
+enum StudentStatus { APPROVED, EXAM, REPROVED };
+#endif //STUDENTSTATUS_H
