@@ -1,5 +1,6 @@
 #include "student.h"
-#include <stdio.h>
+#include <sstream>
+#include <ostream>
 
 
 Student::Student(int _enrollNumber, std::string _name, double *_score, int _absence) {
@@ -15,16 +16,25 @@ Student::Student(int _enrollNumber, std::string _name, double *_score, int _abse
         status = REPROVED;
     }
 
-    double total;
+    double total = 0;
     for (int i = 0; i < 4; i++) {
         score[i] = _score[i];
-        total = _score[i];
+        total += _score[i];
     }
     average = total / 4;
 }
 
-char* Student::toString() {
-    char *str;
-    sprintf(str, "Matricula: %d | Faltas: %d | Nome: %s | Nota 1: %0.2f | Nota 2: %0.2f | Nota 3: %0.2f | Nota 4: %0.2f | Média: %0.2f | Situação: %d", enrollNumber, absence, name, score[0], score[1], score[2], score[3], average, status);
-    return str;
+std::string Student::toString() {
+    std::ostringstream os ;
+    os << "Matricula: " << enrollNumber;
+    os << " | Faltas: " << absence;
+    os << " | Nome: " << name;
+    os << " | Nota 1: " << score[0];
+    os << " | Nota 2: " << score[1];
+    os << " | Nota 3: " << score[2];
+    os << " | Nota 4: " << score[3];
+    os << " | Média: " << average;
+    os << " | Situação: " << status;
+    os << std::endl;
+    return os.str();
 }

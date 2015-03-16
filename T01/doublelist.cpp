@@ -7,7 +7,7 @@
 
 DoubleList::DoubleList() {
     size = 0;
-   first = NULL;
+    first = NULL;
     last = NULL;
 }
 
@@ -16,20 +16,22 @@ void DoubleList::add(Node *node) {
     if (!first) {
         first = node;
         last = node;
+        node->setPrior(NULL);
+        node->setNext(NULL);
     } else {
-        node->setPrior(node);
+        node->setPrior(last);
         last->setNext(node);
         last = node;
     }
 }
 
-Node* DoubleList::getByIndex(int index){
+Node *DoubleList::getByIndex(int index) {
 
     if (index >= size) {
         return NULL;
     } else {
-        Node * ref = first;
-        for (int i = 0; i<index; i++) {
+        Node *ref = first;
+        for (int i = 0; i < index; i++) {
             ref = ref->getNext();
         }
         return ref;
@@ -37,15 +39,18 @@ Node* DoubleList::getByIndex(int index){
 }
 
 void DoubleList::clear() {
-    Node * ref = first;
-    while (ref) {
-        Node * actual = ref;
-        ref = actual->getNext();
-        delete (actual);
-    }
-    first = NULL;
 }
 
 int DoubleList::getSize() {
     return size;
+}
+
+DoubleList::~DoubleList() {
+    do {
+        Node *actual = last->getPrior();
+        delete (last);
+        last = actual;
+    } while (last);
+    first = NULL;
+    last = NULL;
 }

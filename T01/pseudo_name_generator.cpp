@@ -22,6 +22,5 @@ std::string PseudoNameGenerator::getRandomName() {
 }
 
 PseudoNameGenerator::~PseudoNameGenerator() {
-    doubleList.clear();
     delete(&doubleList);
 }

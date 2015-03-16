@@ -15,11 +15,10 @@ int main(int argc, char *argv[]) {
     long pageSize = atoi(argv[1]);
     long size = atoi(argv[2]);
 
-    FILE *f = fopen("/tmp/t.bin", "wb");
+    FILE *f = fopen("/tmp/t.bin", "wb+");
     /// Descobre quantos registros são necessário para atingir o tamanho
     /// tamanho em Mebibytes
-//    long regNum = (size * 1024 * 1024) / sizeof(Student);
-    long regNum = 1;
+    long regNum = (size * 1024 * 1024) / sizeof(Student);
     cout << regNum << endl;
     // Calcula as iterações com base do numero de elementos e páginas
     long iterations = regNum / pageSize;
@@ -32,7 +31,7 @@ int main(int argc, char *argv[]) {
     }
     writeElements(f, remaining, factory);
 
-    delete(factory);
+    //delete(factory);
 
     rewind(f);
 
@@ -50,7 +49,6 @@ int main(int argc, char *argv[]) {
 void writeElements(FILE *f, long size, StudentFactory *factory) {
     for (int i = 0; i < size; i++) {
         Student *student = factory->getStochastic();
-        cout << student->toString() << endl;
         fwrite(student, sizeof(Student), 1, f);
         delete(student);
     }
@@ -59,7 +57,7 @@ void writeElements(FILE *f, long size, StudentFactory *factory) {
 
 void readElements(FILE *f, long size) {
     for (int i = 0; i < size; i++) {
-        Student *student = new Student();
+        Student *student = new Student;
         fread(student, sizeof(Student), 1, f);
         cout << student->toString() << endl;
         delete(student);

@@ -27,7 +27,7 @@ private:
     StudentStatus status;
 
 public:
-    char * toString();
+    std::string toString();
 
 };
 

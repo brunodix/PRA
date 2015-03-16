@@ -10,7 +10,8 @@ class DoubleList {
     Node *last;
 
 public:
-    DoubleList(void);
+    DoubleList();
+    ~DoubleList();
     void add(Node *node);
     //void remove(Node *node);
     //void show();
