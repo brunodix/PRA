@@ -2,6 +2,9 @@
 #include "student.h"
 #include "student_factory.h"
 #include <stdio.h>
+#include <iostream>
+#include <ctime>
+
 
 void writeElements(FILE *f, long size, StudentFactory *factory);
 
@@ -15,6 +18,9 @@ int main(int argc, char *argv[]) {
     long pageSize = atoi(argv[1]);
     long size = atoi(argv[2]);
 
+    cout << "Pagina:" << pageSize << endl;
+    cout << "Tamanho:" << size << endl;
+
     FILE *f = fopen("/tmp/t.bin", "wb+");
     /// Descobre quantos registros são necessário para atingir o tamanho
     /// tamanho em Mebibytes
@@ -22,23 +28,34 @@ int main(int argc, char *argv[]) {
     cout << regNum << endl;
     // Calcula as iterações com base do numero de elementos e páginas
     long iterations = regNum / pageSize;
-    cout << iterations << endl;
     long remaining = regNum % pageSize;
-    cout << remaining << endl;
+	time_t start,end;
     StudentFactory *factory = new StudentFactory();
+
+	time (&start);
+
     for (int i = 0; i < iterations; i++) {
         writeElements(f, pageSize, factory);
     }
     writeElements(f, remaining, factory);
 
+	time (&end);
+	cout << "Gravação:" << difftime (end,start) << endl;
+
     //delete(factory);
 
     rewind(f);
 
-    for (int i = 0; i < iterations; i++) {
-        readElements(f, pageSize);
-    }
-    readElements(f, remaining);
+	time (&start);
+
+	for (int i = 0; i < iterations; i++) {
+		readElements(f, pageSize);
+	}
+	readElements(f, remaining);
+
+
+	time (&end);
+	cout << "Leitura:" << end -start << endl;
 
 
     fclose(f);
@@ -59,7 +76,7 @@ void readElements(FILE *f, long size) {
     for (int i = 0; i < size; i++) {
         Student *student = new Student;
         fread(student, sizeof(Student), 1, f);
-        cout << student->toString() << endl;
+        //cout << student->toString() << endl;
         delete(student);
     }
 }
