@@ -35,7 +35,7 @@ private:
 public:
     /**
      * Método que retorna um representação em std::string do objeto.
-     *;
+     */
     std::string toString();
 
 };
