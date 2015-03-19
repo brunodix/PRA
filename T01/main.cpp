@@ -15,6 +15,11 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
 
+    if (argc != 3) {
+       cout << "Informe os parâmetros: <tamanho da pagina> <tamanho em Mib>" << endl;
+       return 1;
+    }
+
     /**
      * Carrega os argumentos da linha de comando.
      */
