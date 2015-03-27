@@ -82,11 +82,12 @@ void writeElements(FILE *f, long size, StudentFactory *factory) {
     fflush(f);
 }
 
-void readElements(FILE *f, long size) {
-    for (int i = 0; i < size; i++) {
-        Student *student = new Student;
-        fread(student, sizeof(Student), 1, f);
-        //cout << student->toString() << endl;
-        delete(student);
-    }
+void readElements(FILE *f, long count) {
+        Student **students = new Student*[count];
+        fread(students, sizeof(Student), count, f);
+	for (int i = 0; i < count; i++) {
+		cout << students[i]->toString() << endl;
+	}
+	delete[] students;
+        
 }
