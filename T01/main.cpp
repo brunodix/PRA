@@ -83,10 +83,10 @@ void writeElements(FILE *f, long size, StudentFactory *factory) {
 }
 
 void readElements(FILE *f, long count) {
-        Student **students = new Student*[count];
+        Student *students = new Student[count];
         fread(students, sizeof(Student), count, f);
 	for (int i = 0; i < count; i++) {
-		cout << students[i]->toString() << endl;
+		cout << students[i].toString() << endl;
 	}
 	delete[] students;
         
