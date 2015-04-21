@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <ctime>
+#include <printf.h>
 
 
 void writeElements(FILE *f, long size, StudentFactory *factory);
@@ -22,19 +23,6 @@ static int const PATHWAYS = 8;
 static int const PAGE_SIZE = FILE_SIZE / PATHWAYS;
 
 int main(int argc, char *argv[]) {
-
-//    if (argc != 3) {
-//       cout << "Informe os parâmetros: <tamanho da pagina> <tamanho em Mib>" << endl;
-//       return 1;
-//    }
-//    /**
-//     * Carrega os argumentos da linha de comando.
-//     */
-//    long pageSize = atoi(argv[1]);
-//    long size = atoi(argv[2]);
-//
-//    cout << "Quantidade de registros da Pagina:" << pageSize << endl;
-//    cout << "Tamanho do arquivo gerado em MiB:" << size << endl;
 
     FILE *f = fopen("data.bin", "wb+");
     /**
@@ -58,6 +46,7 @@ int main(int argc, char *argv[]) {
 }
 
 void readFile(FILE *f, long iterations, long remaining) {
+    time_t start,end;
     time (&start);
 
     /// Executa a gravação
