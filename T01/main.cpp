@@ -4,12 +4,15 @@
 #include <stdio.h>
 #include <iostream>
 #include <ctime>
-#include <printf.h>
 
 
 void writeElements(FILE *f, long size, StudentFactory *factory);
 
 void readElements(FILE *f, long size);
+
+void writeFile(FILE *f, long iterations, long remaining, StudentFactory *factory);
+
+void readFile(FILE *f, long iterations, long remaining);
 
 using namespace std;
 
@@ -43,23 +46,18 @@ int main(int argc, char *argv[]) {
     // Calcula as iterações com base do numero de elementos e páginas
     long iterations = regNum / PAGE_SIZE;
     long remaining = regNum % PAGE_SIZE;
-    time_t start,end;
     StudentFactory *factory = new StudentFactory();
 
-    time (&start);
-
-    /// Executa a gravação
-    for (int i = 0; i < iterations; i++) {
-        writeElements(f, PAGE_SIZE, factory);
-    }
-    /// Grava o resto da quantidade de registros
-    writeElements(f, remaining, factory);
-
-    time (&end);
-    cout << "Tempo de Gravação:" << difftime (end,start) << endl;
+    writeFile(f, iterations, remaining, factory);
 
     rewind(f);
 
+    readFile(f, iterations, remaining);
+
+    return 0;
+}
+
+void readFile(FILE *f, long iterations, long remaining) {
     time (&start);
 
     /// Executa a gravação
@@ -73,8 +71,21 @@ int main(int argc, char *argv[]) {
     cout << "Tempo de Leitura:" << end -start << endl;
 
     fclose(f);
+}
 
-    return 0;
+void writeFile(FILE *f, long iterations, long remaining, StudentFactory *factory) {
+    time_t start,end;
+    time (&start);
+
+    /// Executa a gravação
+    for (int i = 0; i < iterations; i++) {
+        writeElements(f, PAGE_SIZE, factory);
+    }
+    /// Grava o resto da quantidade de registros
+    writeElements(f, remaining, factory);
+
+    time (&end);
+    cout << "Tempo de Gravação:" << difftime (end,start) << endl;
 }
 
 void writeElements(FILE *f, long size, StudentFactory *factory) {
