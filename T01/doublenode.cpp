@@ -1,18 +1,18 @@
 #include <stdlib.h>
-#include "node.h"
+#include "doublenode.h"
 
 using namespace std;
 
-Node::Node(std::string value) {
+DoubleNode::DoubleNode(std::string value) {
     this->value = value;
     prior = NULL;
     next = NULL;
 }
 
-void Node::setValue(std::string value) {
+void DoubleNode::setValue(std::string value) {
     this->value = value;
 }
 
-std::string Node::getValue() {
+std::string DoubleNode::getValue() {
     return this->value;
 }

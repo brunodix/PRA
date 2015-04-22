@@ -5,15 +5,23 @@
 #include <iostream>
 #include <ctime>
 #include <printf.h>
+#include "comparators.h"
+#include "timer.h"
+#include <list>
+#include "tree.h"
 
 
 void writeElements(FILE *f, long size, StudentFactory *factory);
 
-void readElements(FILE *f, long size);
+Student * readElements(FILE *f, long size);
 
 void writeFile(FILE *f, long iterations, StudentFactory *factory);
 
-void readFile(FILE *f, long iterations);
+void orderElements(FILE *f, long iterations);
+
+int compareByName(const void *std1, const void *std2);
+
+Student* readElement(int index, FILE *f);
 
 using namespace std;
 
@@ -32,6 +40,7 @@ static int const REG_NUM = FILE_SIZE/STUDENT_SIZE;
 // Tamanho das páginas de registros
 static int const REG_PAGE_SIZE = REG_NUM / PATHWAYS;
 
+
 int main(int argc, char *argv[]) {
 
     FILE *f = fopen("data.bin", "wb+");
@@ -41,29 +50,42 @@ int main(int argc, char *argv[]) {
      */
     cout << REG_NUM << endl;
     // Calcula as iterações com base do numero de elementos e páginas
-    long iterations = REG_NUM / REG_PAGE_SIZE;
     StudentFactory *factory = new StudentFactory();
 
-    writeFile(f, iterations, factory);
+    writeFile(f, PATHWAYS, factory);
 
     rewind(f);
 
-    readFile(f, iterations);
+    orderElements(f, PATHWAYS);
 
     return 0;
 }
 
-void readFile(FILE *f, long iterations) {
-    time_t start,end;
-    time (&start);
+void orderElements(FILE *f, long iterations) {
+    Timer t;
+
+    std::list<long> indexes[PATHWAYS];
+    std::list<long>::iterator iterators[PATHWAYS];
+    Tree<long> trees[PATHWAYS];
+    for (int i = 0; i < PATHWAYS; i++){
+        iterators[i]= indexes[i].begin();
+    }
+    t.start();
 
     /// Executa a gravação
     for (int i = 0; i < iterations; i++) {
-        readElements(f, REG_PAGE_SIZE);
+        Student *elements = readElements(f, REG_PAGE_SIZE);
+        qsort(elements, REG_PAGE_SIZE, STUDENT_SIZE, compareByName);
+        for (int j =0; j < REG_PAGE_SIZE; j++) {
+            indexes[i].insert(iterators[i], elements[j].getEnrollNumber());
+        }
     }
 
-    time (&end);
-    cout << "Tempo de Leitura:" << end -start << endl;
+    for (int i = 0; i < PATHWAYS; i++){
+        iterators[i]= indexes[i].begin();
+    }
+    t.stop();
+    cout << "Tempo de Leitura:" << t.getSeconds() << endl;
 
     fclose(f);
 }
@@ -91,12 +113,30 @@ void writeElements(FILE *f, long size, StudentFactory *factory) {
     fflush(f);
 }
 
-void readElements(FILE *f, long count) {
-        Student *students = new Student[count];
-        fread(students, sizeof(Student), count, f);
-	for (int i = 0; i < count; i++) {
-		cout << students[i].toString() << endl;
-	}
-	delete[] students;
+Student * readElements(FILE *f, long count) {
+    Student *students = new Student[count];
+    fread(students, sizeof(Student), count, f);
+    return students;
         
 }
+
+int compareByName(const void *std1, const void *std2) {
+    Student *s1 = (Student*) std1;
+    Student *s2 = (Student*) std2;
+
+    if (s1->getName() < s2->getName()) {
+        return -1;
+    } else if (s1->getName() == s2->getName()  && (s1->getEnrollNumber() < s2->getEnrollNumber())) {
+        return -1;
+    } else {
+        return 1;
+    }
+}
+
+Student* readElement(int index, FILE *f) {
+        fseek(f, (index * STUDENT_SIZE), SEEK_SET);
+        Student *student = new Student();
+        fread(student, STUDENT_SIZE, 1, f);
+        return student;
+}
+

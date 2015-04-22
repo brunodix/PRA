@@ -16,7 +16,6 @@ Indexador::Indexador() {
 void Indexador::setIndice() {
     // Listar indices disponíveis
     cout << "Lista de indices" << endl;
-    cout << "[0] Matricula" << endl;
     cout << "[1] Nome; Matricula" << endl;
     cout << "[2] Situacao; Nome; Matricula" << endl;
     cout << "[3] Maior Media; Nome; Matricula" << endl;
@@ -51,37 +50,27 @@ std::string Indexador::getDescricaoIndice() {
 /*
     Compara os valores dos indices entre dois Estudantes.
 */
-int Indexador::getComparaIndice(Student *estudante1, Student *estudante2) {
+int Indexador::getComparaIndice(Student *s1, Student *s2) {
     // Matricula;
     if (this->index == 0) {
-        if (estudante1->getMatricula() < estudante2->getMatricula())
+        if (s1->getMatricula() < s2->getMatricula())
             return -1;
         else
             return 1;
     }
 
     // Nome; Matricula;
-    if (this->index == 1) {
-        if (estudante1->getNome() < estudante2->getNome())
-            return -1;
-        else if (estudante1->getNome() == estudante2->getNome()) {
-            if (estudante1->getMatricula() < estudante2->getMatricula())
-                return -1;
-            else
-                return 1;
-        } else
-            return 1;
-    }
+
 
     // Situacao; Nome; Matricula
     if (this->index == 2) {
-        if (estudante1->getSituacao() < estudante2->getSituacao())
+        if (s1->getSituacao() < s2->getSituacao())
             return -1;
-        else if (estudante1->getSituacao() == estudante2->getSituacao()) {
-            if (estudante1->getNome() < estudante2->getNome())
+        else if (s1->getSituacao() == s2->getSituacao()) {
+            if (s1->getNome() < s2->getNome())
                 return -1;
-            else if (estudante1->getNome() == estudante2->getNome()) {
-                if (estudante1->getMatricula() < estudante2->getMatricula())
+            else if (s1->getNome() == s2->getNome()) {
+                if (s1->getMatricula() < s2->getMatricula())
                     return -1;
                 else
                     return 1;
@@ -95,13 +84,13 @@ int Indexador::getComparaIndice(Student *estudante1, Student *estudante2) {
 
     // Maior Media, Nome, Matricula;
     if (this->index == 3) {
-        if (estudante1->getMedia() > estudante2->getMedia())
+        if (s1->getMedia() > s2->getMedia())
             return -1;
-        else if (estudante1->getMedia() == estudante2->getMedia()) {
-            if (estudante1->getNome() < estudante2->getNome())
+        else if (s1->getMedia() == s2->getMedia()) {
+            if (s1->getNome() < s2->getNome())
                 return -1;
-            else if (estudante1->getNome() == estudante2->getNome()) {
-                if (estudante1->getMatricula() < estudante2->getMatricula())
+            else if (s1->getNome() == s2->getNome()) {
+                if (s1->getMatricula() < s2->getMatricula())
                     return -1;
                 else
                     return 1;
@@ -114,13 +103,13 @@ int Indexador::getComparaIndice(Student *estudante1, Student *estudante2) {
     }
     // Menor Media, Nome, Matricula
     if (this->index == 4) {
-        if (estudante1->getMedia() < estudante2->getMedia())
+        if (s1->getMedia() < s2->getMedia())
             return -1;
-        else if (estudante1->getMedia() == estudante2->getMedia()) {
-            if (estudante1->getNome() < estudante2->getNome())
+        else if (s1->getMedia() == s2->getMedia()) {
+            if (s1->getNome() < s2->getNome())
                 return -1;
-            else if (estudante1->getNome() == estudante2->getNome()) {
-                if (estudante1->getMatricula() < estudante2->getMatricula())
+            else if (s1->getNome() == s2->getNome()) {
+                if (s1->getMatricula() < s2->getMatricula())
                     return -1;
                 else
                     return 1;

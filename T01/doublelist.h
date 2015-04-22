@@ -1,21 +1,21 @@
 #ifndef DOUBLELIST_H
 #define DOUBLELIST_H
-#include "node.h"
+#include "doublenode.h"
 
 using namespace std;
 
 class DoubleList {
     int size;
-    Node *first;
-    Node *last;
+    DoubleNode *first;
+    DoubleNode *last;
 
 public:
     DoubleList();
     ~DoubleList();
-    void add(Node *node);
-    //void remove(Node *node);
+    void add(DoubleNode *node);
+    //void remove(DoubleNode *node);
     //void show();
-    Node* getByIndex(int index);
+    DoubleNode * getByIndex(int index);
     void clear();
 
     int getSize();

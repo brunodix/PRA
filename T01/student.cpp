@@ -40,14 +40,14 @@ std::string Student::toString() {
 }
 
 /// Retorna a Matrícula
-int Student::getMatricula(){ return enrollNumber; }
+long Student::getEnrollNumber(){ return enrollNumber; }
 
 /// Retorna o Nome
-std::string Student::getNome(){ return name; }
+std::string Student::getName(){ return name; }
 
 /// Retorna a Média
-double Student::getMedia(){ return average; }
+double Student::getAverage(){ return average; }
 
 /// Retorna a Situação
-StudentStatus Student::getSituacao(){ return status; }
+StudentStatus Student::getStatus(){ return status; }
 

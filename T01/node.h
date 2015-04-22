@@ -1,23 +1,23 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include "stdlib.h"
-#include <string>
-
-using namespace std;
-
+template <class T>
 class Node {
-    std::string value;
-    Node *next;
-    Node *prior;
-public:
-    Node(std::string value);
-    void setValue(std::string value);
-    std::string getValue();
-    void setPrior(Node *_p) { prior = _p; };
-    void setNext(Node *_n) { next = _n; };
-    Node* getNext() { return next; };
-    Node* getPrior() { return prior; };
+	T value;
+	Node<T> *left;
+	Node<T> *right;
+	public:
+		Node<T>() {};
+		Node<T>(T _value) { value = _value; };
+		T getValue() { return value; };
+		Node<T>* getNext() { return right; };
+		Node<T>* getRight() { return right; };
+		Node<T>* getPrevious() { return left; };
+		Node<T>* getLeft() { return left; };
+		void setNext(Node<T> *node) { right = node; };
+		void setRight(Node<T> *node) { right = node; };
+		void setPrevious(Node<T> *node) { left = node; };
+		void setLeft(Node<T> *node) { left = node; };
 };
 
 #endif
