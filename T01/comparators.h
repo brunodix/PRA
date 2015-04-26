@@ -19,9 +19,9 @@ public:
     int  getIndice();
     int  getComparaIndice(Student *estudante1, Student *estudante2);
     std::string getDescricaoIndice();
-    static int compareByName(const void *std1, const void *std2);
-    static int compareByStatusAndName(const void* student1, const void* student2);
-    static int compareByDescAvgAndName(const void* student1, const void* student2);
-    static int compareByAscAvgAndName(const void* student1, const void* student2);
+//    int compareByName(const void *std1, const void *std2);
+//    int compareByStatusAndName(const void* student1, const void* student2);
+//    int compareByDescAvgAndName(const void* student1, const void* student2);
+//    int compareByAscAvgAndName(const void* student1, const void* student2);
 };
 #endif

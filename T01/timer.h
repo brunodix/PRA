@@ -20,5 +20,25 @@ class Timer {
         long getSeconds();
 };
 
+void Timer::start() {
+    if (t_start != 0) {
+        t_start = clock();
+    }
+}
+
+void Timer::stop() {
+    t_diff += (clock() - t_start);
+    t_start = 0;
+}
+
+void Timer::reset() {
+    t_diff = 0;
+    t_start = 0;
+}
+
+long Timer::getSeconds() {
+    return t_diff*1000/CLOCKS_PER_SEC;
+}
+
 
 #endif //PRA_T01_TIMER_H

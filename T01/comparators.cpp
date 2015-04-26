@@ -1,11 +1,11 @@
 #include <stdlib.h>
-#include "indexador.h"
+#include "comparators.h"
 #include "student.h"
 #include <iostream>
 
 using namespace std;
 
-Indexador::Indexador() {
+Comparator::Comparator() {
     // Cria objeto com indice default. (1)
     this->index = 0;
 }
@@ -13,10 +13,10 @@ Indexador::Indexador() {
 /*
     Define indice a ser utilizado
 */
-void Indexador::setIndice() {
+void Comparator::setIndice() {
     // Listar indices disponíveis
     cout << "Lista de indices" << endl;
-    cout << "[1] Nome; Matricula" << endl;
+    cout << "[1] Name; Matricula" << endl;
     cout << "[2] Situacao; Nome; Matricula" << endl;
     cout << "[3] Maior Media; Nome; Matricula" << endl;
     cout << "[4] Menor Media; Nome; Matricula" << endl;
@@ -30,19 +30,19 @@ void Indexador::setIndice() {
 /*
     Retorna numero do indice
 */
-int Indexador::getIndice() { return this->index; }
+int Comparator::getIndice() { return this->index; }
 
 /*
     Retorna descricao do indice
 */
-std::string Indexador::getDescricaoIndice() {
+std::string Comparator::getDescricaoIndice() {
     std::string sRetorno;
 
     if (this->index == 0) sRetorno = "Matricula";
-    else if (this->index == 1) sRetorno = "Nome, Matricula";
-    else if (this->index == 2) sRetorno = "Situacao, Nome, Matricula";
-    else if (this->index == 3) sRetorno = "Maior Media, Nome, Matricula";
-    else if (this->index == 4) sRetorno = "Menor Media, Nome, Matricula";
+    else if (this->index == 1) sRetorno = "Name, Matricula";
+    else if (this->index == 2) sRetorno = "Situacao, Name, Matricula";
+    else if (this->index == 3) sRetorno = "Maior Media, Name, Matricula";
+    else if (this->index == 4) sRetorno = "Menor Media, Name, Matricula";
 
     return sRetorno;
 }
@@ -50,27 +50,27 @@ std::string Indexador::getDescricaoIndice() {
 /*
     Compara os valores dos indices entre dois Estudantes.
 */
-int Indexador::getComparaIndice(Student *s1, Student *s2) {
+int Comparator::getComparaIndice(Student *s1, Student *s2) {
     // Matricula;
     if (this->index == 0) {
-        if (s1->getMatricula() < s2->getMatricula())
+        if (s1->getEnrollNumber() < s2->getEnrollNumber())
             return -1;
         else
             return 1;
     }
 
-    // Nome; Matricula;
+    // Name; Matricula;
 
 
-    // Situacao; Nome; Matricula
+    // Situacao; Name; Matricula
     if (this->index == 2) {
-        if (s1->getSituacao() < s2->getSituacao())
+        if (s1->getStatus() < s2->getStatus())
             return -1;
-        else if (s1->getSituacao() == s2->getSituacao()) {
-            if (s1->getNome() < s2->getNome())
+        else if (s1->getStatus() == s2->getStatus()) {
+            if (s1->getName() < s2->getName())
                 return -1;
-            else if (s1->getNome() == s2->getNome()) {
-                if (s1->getMatricula() < s2->getMatricula())
+            else if (s1->getName() == s2->getName()) {
+                if (s1->getEnrollNumber() < s2->getEnrollNumber())
                     return -1;
                 else
                     return 1;
@@ -82,15 +82,15 @@ int Indexador::getComparaIndice(Student *s1, Student *s2) {
             return 1;
     }
 
-    // Maior Media, Nome, Matricula;
+    // Maior Media, Name, Matricula;
     if (this->index == 3) {
-        if (s1->getMedia() > s2->getMedia())
+        if (s1->getAverage() > s2->getAverage())
             return -1;
-        else if (s1->getMedia() == s2->getMedia()) {
-            if (s1->getNome() < s2->getNome())
+        else if (s1->getAverage() == s2->getAverage()) {
+            if (s1->getName() < s2->getName())
                 return -1;
-            else if (s1->getNome() == s2->getNome()) {
-                if (s1->getMatricula() < s2->getMatricula())
+            else if (s1->getName() == s2->getName()) {
+                if (s1->getEnrollNumber() < s2->getEnrollNumber())
                     return -1;
                 else
                     return 1;
@@ -101,15 +101,15 @@ int Indexador::getComparaIndice(Student *s1, Student *s2) {
         else
             return 1;
     }
-    // Menor Media, Nome, Matricula
+    // Menor Average, Name, EnrollNumber
     if (this->index == 4) {
-        if (s1->getMedia() < s2->getMedia())
+        if (s1->getAverage() < s2->getAverage())
             return -1;
-        else if (s1->getMedia() == s2->getMedia()) {
-            if (s1->getNome() < s2->getNome())
+        else if (s1->getAverage() == s2->getAverage()) {
+        if (s1->getName() < s2->getName())
                 return -1;
-            else if (s1->getNome() == s2->getNome()) {
-                if (s1->getMatricula() < s2->getMatricula())
+            else if (s1->getName() == s2->getName()) {
+                if (s1->getEnrollNumber() < s2->getEnrollNumber())
                     return -1;
                 else
                     return 1;

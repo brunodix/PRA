@@ -8,8 +8,7 @@
 #include "comparators.h"
 #include "timer.h"
 #include <list>
-#include "tree.h"
-
+#include "StackBegin.h"
 
 void writeElements(FILE *f, long size, StudentFactory *factory);
 
@@ -23,6 +22,22 @@ int compareByName(const void *std1, const void *std2);
 
 Student* readElement(int index, FILE *f);
 
+StackBegin* menor(StackBegin *s1, StackBegin *s2, int comparator(const void *, const void *)) {
+    if ((s1 == NULL && s1->getSelected() == NULL) && (s2 == NULL && s2->getSelected() == NULL)) {
+        return NULL;
+    } else if (s1->getSelected() == NULL || s1 == NULL) {
+        return s2;
+    } else if (s2->getSelected() == NULL || s2 == NULL) {
+        return s1;
+    }
+    if (comparator(s1->getSelected(), s2->getSelected()) <= 0) {
+        return s1;
+    } else {
+        return s2;
+    }
+
+}
+
 using namespace std;
 
 //Tamanho do arquivo em MEGAS
@@ -34,11 +49,11 @@ static int const PATHWAYS = 8;
 // Tamanho do definição de estudante
 static int const STUDENT_SIZE = sizeof(Student);
 // Tamanho do arquivo final, que não tenha sobras
-static int const FILE_SIZE = MIB*SIZE - (((MIB*SIZE)/PATHWAYS)%STUDENT_SIZE)*PATHWAYS;
+static int const FILE_SIZE = MIB*SIZE;
 // Numero de regitros
 static int const REG_NUM = FILE_SIZE/STUDENT_SIZE;
 // Tamanho das páginas de registros
-static int const REG_PAGE_SIZE = REG_NUM / PATHWAYS;
+static int const REG_PAGE_SIZE = 100000;
 
 
 int main(int argc, char *argv[]) {
@@ -64,26 +79,37 @@ int main(int argc, char *argv[]) {
 void orderElements(FILE *f, long iterations) {
     Timer t;
 
-    std::list<long> indexes[PATHWAYS];
-    std::list<long>::iterator iterators[PATHWAYS];
-    Tree<long> trees[PATHWAYS];
-    for (int i = 0; i < PATHWAYS; i++){
-        iterators[i]= indexes[i].begin();
-    }
     t.start();
+
+    StackBegin stacks[iterations];
+
+    long index[REG_PAGE_SIZE];
 
     /// Executa a gravação
     for (int i = 0; i < iterations; i++) {
         Student *elements = readElements(f, REG_PAGE_SIZE);
         qsort(elements, REG_PAGE_SIZE, STUDENT_SIZE, compareByName);
-        for (int j =0; j < REG_PAGE_SIZE; j++) {
-            indexes[i].insert(iterators[i], elements[j].getEnrollNumber());
+        stacks[i].setElements(elements, REG_PAGE_SIZE);
+    }
+    StackBegin *stkLesser;
+    int counter = 0;
+    do {
+        StackBegin *stk1 = menor(&stacks[0], &stacks[1], compareByName);
+        StackBegin *stk2 = menor(&stacks[2], &stacks[3], compareByName);
+        StackBegin *stk3 = menor(&stacks[4], &stacks[5], compareByName);
+        StackBegin *stk4 = menor(&stacks[6], &stacks[7], compareByName);
+        stkLesser = menor(menor(stk1, stk2, compareByName), menor(stk3, stk4, compareByName), compareByName);
+        if (stkLesser != NULL && stkLesser->getSelected() != NULL) {
+            index[counter++] = stkLesser->getSelected()->getEnrollNumber();
+            cout << "Index:" << stkLesser->getSelected()->getEnrollNumber() << endl;
+            stkLesser->stepNext();
+            if (counter > REG_PAGE_SIZE) {
+                cout << "Foi uma pagina";
+                counter = 0;
+            }
         }
-    }
+    } while (stkLesser != NULL && stkLesser->getSelected() != NULL);
 
-    for (int i = 0; i < PATHWAYS; i++){
-        iterators[i]= indexes[i].begin();
-    }
     t.stop();
     cout << "Tempo de Leitura:" << t.getSeconds() << endl;
 
