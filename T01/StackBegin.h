@@ -1,8 +1,11 @@
+#include "SegmentReader.h"
+
 #ifndef PRA_T01_STACK_H
 #define PRA_T01_STACK_H
 
 
 class StackBegin {
+        SegmentReader *segmentReader;
         Student *elements;
         Student *selected;
         long counter;
@@ -12,8 +15,8 @@ class StackBegin {
         void stepNext();
 
     void setElements(Student *pStudent, int arraySize);
+    void setSegmentReader(SegmentReader *segReader);
 };
-
 
 #endif //PRA_T01_STACK_H
 
@@ -26,6 +29,10 @@ Student * StackBegin::getSelected() {
 
 
 void StackBegin::stepNext() {
+    if (elements == NULL) {
+        int idx[1   ];
+        elements = segmentReader->readSegment(idx);
+    }
     if (counter < limit) {
         selected = &elements[counter++];
     } else {
@@ -38,4 +45,8 @@ void StackBegin::setElements(Student *pStudent, int arraySize) {
     counter = 0;
     limit = arraySize-1;
     stepNext();
+}
+
+void StackBegin::setSegmentReader(SegmentReader *segReader) {
+    segmentReader = segReader;
 }

@@ -23,4 +23,4 @@ set(SOURCE_FILES
     student_status.h
     timer.h)
 
-add_executable(T01 ${SOURCE_FILES})
+add_executable(T01 ${SOURCE_FILES} SegmentReader.h constants.h)
