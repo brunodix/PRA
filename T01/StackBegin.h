@@ -7,7 +7,7 @@
 class StackBegin {
         SegmentReader *segmentReader;
         Student *elements;
-        Student *selected;
+        Student *selected = NULL;
         long counter;
         long limit;
     public:
@@ -16,6 +16,7 @@ class StackBegin {
 
     void setElements(Student *pStudent, int arraySize);
     void setSegmentReader(SegmentReader *segReader);
+    void getCurrentIndex();
 };
 
 #endif //PRA_T01_STACK_H
@@ -29,9 +30,9 @@ Student * StackBegin::getSelected() {
 
 
 void StackBegin::stepNext() {
+    cout << "getNext" << endl;
     if (elements == NULL) {
-        int idx[1   ];
-        elements = segmentReader->readSegment(idx);
+        elements = segmentReader->readSegment();
     }
     if (counter < limit) {
         selected = &elements[counter++];

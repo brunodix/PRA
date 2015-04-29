@@ -21,5 +21,8 @@ static int const FILE_SIZE = MIB * SIZE;
 static int const REG_NUM = FILE_SIZE / STUDENT_SIZE;
 // Tamanho das páginas de registros
 static int const REG_PAGE_SIZE = 100000;
+//Tamanho de um Long
+static int const LONG_SIZE = sizeof(long);
+static int const INDEX_OFFSET = STUDENT_SIZE-LONG_SIZE;
 
 #endif //T01_CONSTANTS_H

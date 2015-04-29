@@ -72,14 +72,21 @@ int main(int argc, char *argv[]) {
 void orderElements(FILE *fData, FILE *fIndexFile, long iterations, int comparator(const void *, const void *)) {
     Timer t;
 
-    //Inicializa o arquivo de indice
-    long blankIndex[REG_NUM];
-    for (long i; i < REG_NUM; i++) {
-        blankIndex[i] = i;
+    fseek(fIndexFile, 0L, SEEK_END);
+    long fileSize = ftell(fIndexFile);
+    long startIndex[REG_NUM];
+    //Se o arquivo estiver em branco, carrega os indices do arquivo de dados
+    if (fileSize == 0) {
+        long value;
+        for (long i; i < REG_NUM; i++) {
+            fread(&value, LONG_SIZE, 1, fData);
+            fseek(fData, INDEX_OFFSET, SEEK_CUR);
+            //Inicializa o arquivo de indice
+            startIndex[i] = i;
+        }
+        fwrite(startIndex, LONG_SIZE, REG_NUM, fIndexFile);
+        fflush(fIndexFile);
     }
-    fwrite(blankIndex, sizeof(long), REG_NUM, fIndexFile);
-    fflush(fIndexFile);
-    delete blankIndex;
 
     t.start();
 
