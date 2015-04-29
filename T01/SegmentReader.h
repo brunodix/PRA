@@ -35,31 +35,24 @@ class SegmentReader {
             dataFile = fData;
             indexFile = fIndexFile;
             compare = comp;
+            fseek(indexFile, 0, SEEK_SET);
         }
 
         Student* readSegment() {
             int regs = getAvaiableRegs();
             if (regs > 0) {
-                long index[regs];
+                cout << "Regs avl" << regs;
+                long *index = new long[regs];
                 for (int i = 0; i < regs; i++) {
                     index[i] = getNextIndex();
                 }
-                Student **elements = readElements(index, regs);
+                Student *elements = readElements(index, regs);
                 qsort(elements, REG_PAGE_SIZE, STUDENT_SIZE, compare);
-                return (Student *) elements;
+                return elements;
             } else {
                 return NULL;
             }
         }
-
-        Student **readElements(long index[], int size) {
-            Student **students = (Student **) new Student[size];
-            for (int i = 0; i < size; i++) {
-                students[i] = readElement(index[i]);
-            }
-            return students;
-        }
-
         Student *readElement(int index) {
             fseek(dataFile, (index * STUDENT_SIZE), SEEK_SET);
             Student *student = new Student();
@@ -67,11 +60,18 @@ class SegmentReader {
             return student;
         }
 
+        Student *readElements(long index[], int size) {
+            Student **students = (Student **) new Student[size];
+            for (int i = 0; i < size; i++) {
+                students[i] = readElement(index[i]);
+            }
+            return *students;
+        }
+
+
         int getNextIndex() {
             long result;
             fread(&result, LONG_SIZE, 1, indexFile);
-            fseek(indexFile, INDEX_OFFSET, SEEK_CUR);
-            cout << "NExt Index:" << result << " pos:" << ftell(indexFile) << endl;
             return result;
         }
 

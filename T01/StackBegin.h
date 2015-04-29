@@ -6,7 +6,7 @@
 
 class StackBegin {
         SegmentReader *segmentReader;
-        Student *elements;
+        Student *elements = NULL;
         Student *selected = NULL;
         long counter;
         long limit;
@@ -30,7 +30,6 @@ Student * StackBegin::getSelected() {
 
 
 void StackBegin::stepNext() {
-    cout << "getNext" << endl;
     if (elements == NULL) {
         elements = segmentReader->readSegment();
     }

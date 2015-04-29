@@ -8,7 +8,7 @@
 #include "student.h"
 
 //Tamanho do arquivo em MEGAS
-static int const SIZE = 10;
+static int const SIZE = 100;
 // 1 MiB
 static int const MIB = 1024 * 1024;
 // Número de vias
