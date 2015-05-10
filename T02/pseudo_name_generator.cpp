@@ -11,7 +11,7 @@ PseudoNameGenerator::PseudoNameGenerator(std::string fileName) {
 
     for( std::string line; getline( input, line ); )
     {
-        doubleList.add(new Node(line));
+        doubleList.add(new DoubleNode(line));
     }
     input.close();
 }

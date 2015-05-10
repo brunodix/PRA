@@ -38,3 +38,16 @@ std::string Student::toString() {
     os << std::endl;
     return os.str();
 }
+
+/// Retorna a Matrícula
+long Student::getEnrollNumber(){ return enrollNumber; }
+
+/// Retorna o Nome
+std::string Student::getName(){ return name; }
+
+/// Retorna a Média
+double Student::getAverage(){ return average; }
+
+/// Retorna a Situação
+StudentStatus Student::getStatus(){ return status; }
+
