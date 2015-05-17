@@ -19,27 +19,25 @@ public:
     Student(){};
 
 private:
-/// Número da matrícula
-    int enrollNumber;
-    //Nome
+    /// Número da matrícula
+    long enrollNumber;
+    /// Nome
     char name[60];
-    ///Nota das provas
+    /// Nota das provas
     double score[4];
-    //Média
+    /// Média
     double average;
-    ///Faltas
+    /// Faltas
     int absence;
-    ///Situação
+    /// Situação
     StudentStatus status;
 
 public:
-    /**
-     * Método que retorna um representação em std::string do objeto.
-     */
-    std::string toString();
-
+    std::string   toString();     /// Retorna um representação em std::string do objeto.
+    long          getEnrollNumber(); /// Retorna a Matrícula
+    std::string   getName();      /// Retorna o Nome
+    double        getAverage();     /// Retorna a Média
+    StudentStatus getStatus();  /// Retorna a Situação
 };
-
-
 
 #endif //STUDENT_H
