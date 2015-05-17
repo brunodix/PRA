@@ -23,9 +23,6 @@ public:
     int getStudentCounter();
 };
 
-
-#endif //STUDENTFACTORY_H
-
 Student *StudentFactory::getStochastic() {
     std:string str = nameGenerator->getRandomName() + " " + surnameGenerator->getRandomName();
     double score[4];
@@ -54,3 +51,5 @@ StudentFactory::~StudentFactory() {
 int StudentFactory::getStudentCounter() {
     return counter;
 }
+
+#endif //STUDENTFACTORY_H
