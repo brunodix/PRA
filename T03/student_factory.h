@@ -20,6 +20,7 @@ public:
     Student* getStochastic();
     StudentFactory();
     ~StudentFactory();
+    int getStudentCounter();
 };
 
 
@@ -48,4 +49,8 @@ StudentFactory::~StudentFactory() {
     delete(surnameGenerator);
     delete(absenceGenerator);
     delete(scoreGenerator);
+}
+
+int StudentFactory::getStudentCounter() {
+    return counter;
 }
