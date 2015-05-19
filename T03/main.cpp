@@ -68,28 +68,25 @@ int main(int argc, char *argv[]) {
     writeElements(f, remaining, factory, btree);
 
     timer->stop();
-    cout << "Tempo de gravação: " << timer->getSeconds() << endl;
+    cout << "Tempo de gravação: " << timer->getSeconds() << "milisegundos" << endl;
 
     FILE *indexFile = fopen("index.bin", "wb");
     writeIndex(indexFile, btree);
+    btree->clear();
 
     long *index = readIndex(indexFile);
     cout << index[0];
-    cout << index[1];
-    cout << index[2];
-    cout << index[3];
-    cout << index[4];
     cout.flush();
 
 
 
     rewind(f);
-    /// Executa a gravação
+/// Executa a gravação
 //    for (int i = 0; i < iterations; i++) {
 //        readElements(f, pageSize);
 //    }
-    /// Le o que sobrou dos registros
-    //readElements(f, remaining);
+/// Le o que sobrou dos registros
+//readElements(f, remaining);
 
     fclose(f);
     fclose(indexFile);
@@ -98,28 +95,26 @@ int main(int argc, char *argv[]) {
 }
 
 long *readIndex(FILE *pFILE) {
-    cout << "pos0 " << ftell(pFILE) << endl ;
+
     fseek(pFILE, 0, SEEK_END);
-    int size = ftell(pFILE)/sizeof(long);
+    int size = ftell(pFILE)/LONG_SIZE;
     rewind(pFILE);
-    long index[size];
-    cout << "pos1 " << ftell(pFILE) << endl ;
-    fread(index, sizeof(long), size, pFILE);
-    int res = ferror(pFILE);
-    cout << "pos2 " << ftell(pFILE) << endl ;
+    long *index = new long[size];
+    fread(index, LONG_SIZE, size, pFILE);
+    cerr << "Error code: " << strerror(ferror(pFILE));
     return index;
 }
 
 
 void writeIndex(FILE *file, BTree *pTree) {
-    pTree->traverseToFile(file);
+    pTree->traverse(file);
     fflush(file);
 }
 
 void writeElements(FILE *f, long size, StudentFactory *factory, BTree *btree) {
     for (int i = 0; i < size; i++) {
         Student *student = factory->getStochastic();
-        fwrite(student, sizeof(Student), 1, f);
+        fwrite(student, STUDENT_SIZE, 1, f);
         btree->insert(new Key(student));
         //delete(student);
     }
@@ -128,7 +123,7 @@ void writeElements(FILE *f, long size, StudentFactory *factory, BTree *btree) {
 
 void readElements(FILE *f, long count) {
         Student *students = new Student[count];
-        fread(students, sizeof(Student), count, f);
+        fread(students, STUDENT_SIZE, count, f);
 	for (int i = 0; i < count; i++) {
 		cout << students[i].toString() << endl;
 	}

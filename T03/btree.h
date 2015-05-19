@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <cstdio>
 #include <iostream>
+#include "constants.h"
 
 using namespace std;
 
@@ -48,6 +49,22 @@ public:
     void traverse();
 
 	void traverse(FILE *file);
+
+	void clear() {
+		int i;
+		for (i = 0; i < n; i++) {
+			if (leaf == false) {
+				child[i]->clear();
+				delete child[i];
+			}
+			delete keys[i];
+		}
+		if (leaf == false) {
+			child[i]->clear();
+			delete child[i];
+		}
+
+	};
 
     // Make BTree friend of this so that we can access private members of this
     // class in BTree functions
@@ -101,7 +118,7 @@ public:
 
 	friend class BTreeNode;
 
-	void traverseToFile(FILE *pFILE);
+	void clear() {if (root != NULL) root->clear(); delete root; }
 };
 
 // Constructor for BTreeNode class
@@ -134,7 +151,7 @@ void BTreeNode::traverse(FILE *file) {
         if (leaf == false) {
 			child[i]->traverse(file);
 			long value = keys[i]->traverse();
-			fwrite(&value, sizeof(long), 1, file);
+			fwrite(&value, LONG_SIZE, 1, file);
 		}
     }
 
@@ -605,11 +622,6 @@ void BTree::remove(int k)
 	}
 	return;
 }*/
-
-void BTree::traverseToFile(FILE *pFILE) {
-	if (root != NULL) root->traverse(pFILE);
-
-}
 
 #endif //BTREE_H
 
