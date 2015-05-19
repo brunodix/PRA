@@ -47,7 +47,7 @@ public:
     // A function to traverse all nodes in a subtree rooted with this node
     void traverse();
 
-	void traverse(FILE *f);
+	void traverse(FILE *file);
 
     // Make BTree friend of this so that we can access private members of this
     // class in BTree functions
@@ -124,22 +124,24 @@ BTreeNode::BTreeNode(int t1, bool leaf1, int comparator(const void *, const void
 }
 
 // Function to traverse all nodes in a subtree rooted with this node
-void BTreeNode::traverse(FILE *f) {
+void BTreeNode::traverse(FILE *file) {
     // There are n keys and n+1 children, travers through n keys
     // and first n children
     int i;
     for (i = 0; i < n; i++) {
         // If this is not leaf, then before printing key[i],
         // traverse the subtree rooted with child C[i].
-        if (leaf == false)
-            child[i]->traverse(f);
-		long l = keys[i]->traverse();
-		fwrite(&l, sizeof(long), 1, f);
+        if (leaf == false) {
+			child[i]->traverse(file);
+			long value = keys[i]->traverse();
+			fwrite(&value, sizeof(long), 1, file);
+		}
     }
 
     // Print the subtree rooted with last child
-    if (leaf == false)
-        child[i]->traverse(f);
+    if (leaf == false) {
+        child[i]->traverse(file);
+	}
 }
 
 // Function to traverse all nodes in a subtree rooted with this node

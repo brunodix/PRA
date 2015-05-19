@@ -1,15 +1,20 @@
 #include <iostream>
 #include "student.h"
 #include "student_factory.h"
-#include <ctime>
+#include "timer.h"
 #include "btree.h"
+#include "constants.h"
 
 
 void writeElements(FILE *f, long size, StudentFactory *factory, BTree *btree);
 
 void readElements(FILE *f, long size);
 
-void writeIndex(BTree *pTree);
+Student *readElement(FILE *f, long index);
+
+void writeIndex(FILE *file, BTree *pTree);
+
+long *readIndex(FILE *pFILE);
 
 int comparatorName(const void *key1, const void *key2) {
     Student *s1 = ((Key *) key1)->getStudent();
@@ -49,10 +54,11 @@ int main(int argc, char *argv[]) {
     // Calcula as iterações com base do numero de elementos e páginas
     long iterations = regNum / pageSize;
     long remaining = regNum % pageSize;
-    time_t start,end;
+    Timer *timer = new Timer();
+
     StudentFactory *factory = new StudentFactory();
 
-    time (&start);
+    timer->start();
 
     /// Executa a gravação
     for (int i = 0; i < iterations; i++) {
@@ -61,33 +67,53 @@ int main(int argc, char *argv[]) {
     /// Grava o resto da quantidade de registros
     writeElements(f, remaining, factory, btree);
 
-    writeIndex(btree);
+    timer->stop();
+    cout << "Tempo de gravação: " << timer->getSeconds() << endl;
 
-    time (&end);
-    cout << "Tempo de Gravação:" << difftime (end, start) << endl;
+    FILE *indexFile = fopen("index.bin", "wb");
+    writeIndex(indexFile, btree);
+
+    long *index = readIndex(indexFile);
+    cout << index[0];
+    cout << index[1];
+    cout << index[2];
+    cout << index[3];
+    cout << index[4];
+    cout.flush();
+
+
 
     rewind(f);
-
-    time (&start);
-
     /// Executa a gravação
-    for (int i = 0; i < iterations; i++) {
-        readElements(f, pageSize);
-    }
+//    for (int i = 0; i < iterations; i++) {
+//        readElements(f, pageSize);
+//    }
     /// Le o que sobrou dos registros
-    readElements(f, remaining);
-
-    time (&end);
-    cout << "Tempo de Leitura:" << end-start << endl;
+    //readElements(f, remaining);
 
     fclose(f);
+    fclose(indexFile);
 
     return 0;
 }
 
-void writeIndex(BTree *pTree) {
-    FILE *file = fopen("index.bin", "wb");
+long *readIndex(FILE *pFILE) {
+    cout << "pos0 " << ftell(pFILE) << endl ;
+    fseek(pFILE, 0, SEEK_END);
+    int size = ftell(pFILE)/sizeof(long);
+    rewind(pFILE);
+    long index[size];
+    cout << "pos1 " << ftell(pFILE) << endl ;
+    fread(index, sizeof(long), size, pFILE);
+    int res = ferror(pFILE);
+    cout << "pos2 " << ftell(pFILE) << endl ;
+    return index;
+}
+
+
+void writeIndex(FILE *file, BTree *pTree) {
     pTree->traverseToFile(file);
+    fflush(file);
 }
 
 void writeElements(FILE *f, long size, StudentFactory *factory, BTree *btree) {
@@ -108,4 +134,11 @@ void readElements(FILE *f, long count) {
 	}
 	delete[] students;
         
+}
+
+Student *readElement(FILE *f, long index) {
+    fseek(f, (index * STUDENT_SIZE), SEEK_SET);
+    Student *student = new Student();
+    fread(student, STUDENT_SIZE, 1, f);
+    return student;
 }
