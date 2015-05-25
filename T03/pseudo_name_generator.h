@@ -8,7 +8,7 @@
 using namespace std;
 
 class PseudoNameGenerator {
-    DoubleList doubleList;
+    DoubleList<std::string> *doubleList;
 public:
     PseudoNameGenerator(std::string fileName);
     ~PseudoNameGenerator();

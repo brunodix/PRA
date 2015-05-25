@@ -12,9 +12,13 @@ void readElements(FILE *f, long size);
 
 Student *readElement(FILE *f, long index);
 
-void writeIndex(FILE *file, BTree *pTree);
+void traverse(DoubleList<long> *list, BTree *pTree);
 
 long *readIndex(FILE *pFILE);
+
+void writeIndex(FILE *pFILE, DoubleList<long> *pList);
+
+void readIndex(FILE *pFILE, DoubleList<long> *pList);
 
 int comparatorName(const void *key1, const void *key2) {
     Student *s1 = ((Key *) key1)->getStudent();
@@ -69,24 +73,23 @@ int main(int argc, char *argv[]) {
 
     timer->stop();
     cout << "Tempo de gravação: " << timer->getSeconds() << "milisegundos" << endl;
+    rewind(f);
 
     FILE *indexFile = fopen("index.bin", "wb");
-    writeIndex(indexFile, btree);
+    DoubleList<long> *indexList = new DoubleList<long>();
+    traverse(indexList, btree);
     btree->clear();
+    writeIndex(indexFile, indexList);
+    readIndex(indexFile, indexList);
 
-    long *index = readIndex(indexFile);
-    cout << index[0];
-    cout.flush();
-
-
-
-    rewind(f);
-/// Executa a gravação
-//    for (int i = 0; i < iterations; i++) {
-//        readElements(f, pageSize);
-//    }
-/// Le o que sobrou dos registros
-//readElements(f, remaining);
+    /// Executa a gravação
+    for (int i = 0; i < iterations; i++) {
+        cout << i << endl;
+        cout << indexList->getByIndex(i)->getValue() << endl;
+        cout << readElement(f, indexList->getByIndex(i)->getValue())->toString() << endl;
+    }
+    // Le o que sobrou dos registros
+    readElement(f, remaining);
 
     fclose(f);
     fclose(indexFile);
@@ -94,21 +97,36 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-long *readIndex(FILE *pFILE) {
-
+void readIndex(FILE *pFILE, DoubleList<long> *pList) {
+    pList->clear();
     fseek(pFILE, 0, SEEK_END);
     int size = ftell(pFILE)/LONG_SIZE;
     rewind(pFILE);
-    long *index = new long[size];
-    fread(index, LONG_SIZE, size, pFILE);
-    cerr << "Error code: " << strerror(ferror(pFILE));
-    return index;
+    long *value = new long[size-1];
+    fread(value, LONG_SIZE, size, pFILE);
+    for (int i = 0; i < size; i++) {
+       pList->add(new Node<long>(value[i]));
+    }
+}
+
+void writeIndex(FILE *pFILE, DoubleList<long> *pList) {
+    long *arr = new long[pList->getSize()];
+    int count;
+    Node<long> *n = pList->getByIndex(0);
+    if (n != NULL) {
+        do {
+            arr[count++] = n->getValue();
+            n = n->getNext();
+        } while (n != NULL);
+        rewind(pFILE);
+        fwrite(arr, LONG_SIZE, count-1, pFILE);
+        fflush(pFILE);
+    }
 }
 
 
-void writeIndex(FILE *file, BTree *pTree) {
-    pTree->traverse(file);
-    fflush(file);
+void traverse(DoubleList<long> *doubleList, BTree *pTree) {
+    pTree->traverse(doubleList);
 }
 
 void writeElements(FILE *f, long size, StudentFactory *factory, BTree *btree) {
@@ -116,7 +134,6 @@ void writeElements(FILE *f, long size, StudentFactory *factory, BTree *btree) {
         Student *student = factory->getStochastic();
         fwrite(student, STUDENT_SIZE, 1, f);
         btree->insert(new Key(student));
-        //delete(student);
     }
     fflush(f);
 }

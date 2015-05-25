@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <iostream>
 #include "constants.h"
+#include "doublelist.h"
 
 using namespace std;
 
@@ -48,7 +49,7 @@ public:
     // A function to traverse all nodes in a subtree rooted with this node
     void traverse();
 
-	void traverse(FILE *file);
+	void traverse(DoubleList<long> *list);
 
 	void clear() {
 		int i;
@@ -109,7 +110,7 @@ public:
     void traverse() { if (root != NULL) root->traverse(); }
 
 	// function to traverse the tree
-	void traverse(FILE *f) { if (root != NULL) root->traverse(f); }
+	void traverse(DoubleList<long> *f) { if (root != NULL) root->traverse(f); }
 
     // The main function that inserts a new key in this B-Tree
     void insert(Key *k);
@@ -141,7 +142,7 @@ BTreeNode::BTreeNode(int t1, bool leaf1, int comparator(const void *, const void
 }
 
 // Function to traverse all nodes in a subtree rooted with this node
-void BTreeNode::traverse(FILE *file) {
+void BTreeNode::traverse(DoubleList<long> *doubleList) {
     // There are n keys and n+1 children, travers through n keys
     // and first n children
     int i;
@@ -149,15 +150,15 @@ void BTreeNode::traverse(FILE *file) {
         // If this is not leaf, then before printing key[i],
         // traverse the subtree rooted with child C[i].
         if (leaf == false) {
-			child[i]->traverse(file);
+			child[i]->traverse(doubleList);
 			long value = keys[i]->traverse();
-			fwrite(&value, LONG_SIZE, 1, file);
+			doubleList->add(new Node<long>(value));
 		}
     }
 
     // Print the subtree rooted with last child
     if (leaf == false) {
-        child[i]->traverse(file);
+        child[i]->traverse(doubleList);
 	}
 }
 
