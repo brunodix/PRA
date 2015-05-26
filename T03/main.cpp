@@ -66,10 +66,10 @@ int main(int argc, char *argv[]) {
     long remaining = regNum % pageSize;
 
     BTree *btree;
-    cout << "Informe o tipo de ordenação:" << endl;
-    cout << "1 - Nome, 2 - Média" <<endl;
+//    cout << "Informe o tipo de ordenação:" << endl;
+//    cout << "1 - Nome, 2 - Média" <<endl;
     int opcao;
-    cin >> opcao;
+//    cin >> opcao;
     if (opcao == 1) {
         btree = new BTree(1000, comparatorName);
     } else {
@@ -148,12 +148,13 @@ void writeIndex(FILE *pFILE, DoubleList<long> *pList) {
 }
 
 void writeElements(FILE *f, long size, StudentFactory *factory, BTree *btree) {
+
+    Student **student = (Student **)new Student[size];
     for (int i = 0; i < size; i++) {
-	Student *student = factory->getStochastic();
+        student[i] = factory->getStochastic();
         btree->insert(new Key(student));
-	fwrite(student, STUDENT_SIZE, 1, f);
-	delete student;
     }
+    fwrite(&student, STUDENT_SIZE, size, f);
     fflush(f);
 }
 
@@ -161,6 +162,6 @@ Student *readElement(FILE *f, long index) {
     fseek(f, (index-1 * STUDENT_SIZE), SEEK_SET);
     cout << ftell(f) << endl;
     Student *student = new Student();
-    cout << fread(student, STUDENT_SIZE, 1, f) << endl;
+    cout << fread(&student, STUDENT_SIZE, 1, f) << endl;
     return student;
 }
