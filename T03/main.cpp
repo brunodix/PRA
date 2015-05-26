@@ -1,18 +1,14 @@
 #include <iostream>
+#include <cmath>
 #include "student.h"
 #include "student_factory.h"
 #include "timer.h"
 #include "btree.h"
-#include "constants.h"
 
 
 void writeElements(FILE *f, long size, StudentFactory *factory, BTree *btree);
 
-void readElements(FILE *f, long size);
-
 Student *readElement(FILE *f, long index);
-
-void traverse(DoubleList<long> *list, BTree *pTree);
 
 long *readIndex(FILE *pFILE);
 
@@ -23,7 +19,27 @@ void readIndex(FILE *pFILE, DoubleList<long> *pList);
 int comparatorName(const void *key1, const void *key2) {
     Student *s1 = ((Key *) key1)->getStudent();
     Student *s2 = ((Key *) key2)->getStudent();
-    return s1->getName().compare(s2->getName());
+    int result = s1->getName().compare(s2->getName());
+    return result;
+}
+
+int comparatorAverage(const void *key1, const void *key2) {
+    Student *s1 = ((Key *) key1)->getStudent();
+    Student *s2 = ((Key *) key2)->getStudent();
+//    if (s1->getAverage() < s2->getAverage()) {
+//        return -1;
+//    } else if (s1->getAverage() > s2->getAverage()) {
+//        return 1;
+//    } else {
+//        return 0;
+//    }
+    if (s1->getEnrollNumber() < s2->getEnrollNumber()) {
+        return -1;
+    } else if (s1->getEnrollNumber() < s2->getEnrollNumber()) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 using namespace std;
@@ -33,7 +49,6 @@ using namespace std;
 int main(int argc, char *argv[]) {
 
 
-    BTree *btree = new BTree(8, comparatorName);
     if (argc != 3) {
        cout << "Informe os parâmetros: <tamanho da pagina> <tamanho em Mib>" << endl;
        return 1;
@@ -48,7 +63,6 @@ int main(int argc, char *argv[]) {
     cout << "Quantidade de registros da Pagina:" << pageSize << endl;
     cout << "Tamanho do arquivo gerado em MiB:" << size << endl;
 
-    FILE *f = fopen("data.bin", "wb+");
     /**
      * Descobre quantos registros são necessário para atingir o tamanho
      * tamanho em Mebibytes
@@ -58,12 +72,23 @@ int main(int argc, char *argv[]) {
     // Calcula as iterações com base do numero de elementos e páginas
     long iterations = regNum / pageSize;
     long remaining = regNum % pageSize;
-    Timer *timer = new Timer();
+
+    BTree *btree;
+    cout << "Informe o tipo de ordenação:" << endl;
+    cout << "1 - Nome, 2 - Média" <<endl;
+    int opcao;
+    cin >> opcao;
+    if (opcao == 1) {
+        btree = new BTree(8, comparatorName);
+    } else {
+        btree = new BTree(8, comparatorAverage);
+    }
 
     StudentFactory *factory = new StudentFactory();
-
+    Timer *timer = new Timer();
     timer->start();
 
+    FILE *f = fopen("data.bin", "wb+");
     /// Executa a gravação
     for (int i = 0; i < iterations; i++) {
         writeElements(f, pageSize, factory, btree);
@@ -75,18 +100,21 @@ int main(int argc, char *argv[]) {
     cout << "Tempo de gravação: " << timer->getSeconds() << "milisegundos" << endl;
     rewind(f);
 
-    FILE *indexFile = fopen("index.bin", "wb");
+    FILE *indexFile = fopen("index.bin", "wb+");
     DoubleList<long> *indexList = new DoubleList<long>();
-    traverse(indexList, btree);
+    btree->traverse(indexList);
     btree->clear();
     writeIndex(indexFile, indexList);
+    delete indexList;
+    indexList = new DoubleList<long>();
     readIndex(indexFile, indexList);
 
     /// Executa a gravação
     for (int i = 0; i < iterations; i++) {
-        cout << i << endl;
-        cout << indexList->getByIndex(i)->getValue() << endl;
-        cout << readElement(f, indexList->getByIndex(i)->getValue())->toString() << endl;
+        Node<long> *node = indexList->getByIndex(i);
+        if (node != NULL) {
+            cout << readElement(f, indexList->getByIndex(i)->getValue())->toString() << endl;
+        }
     }
     // Le o que sobrou dos registros
     readElement(f, remaining);
@@ -98,7 +126,7 @@ int main(int argc, char *argv[]) {
 }
 
 void readIndex(FILE *pFILE, DoubleList<long> *pList) {
-    pList->clear();
+    //pega o tamanho do arquivo
     fseek(pFILE, 0, SEEK_END);
     int size = ftell(pFILE)/LONG_SIZE;
     rewind(pFILE);
@@ -119,38 +147,27 @@ void writeIndex(FILE *pFILE, DoubleList<long> *pList) {
             n = n->getNext();
         } while (n != NULL);
         rewind(pFILE);
-        fwrite(arr, LONG_SIZE, count-1, pFILE);
+        fwrite(arr, LONG_SIZE, count, pFILE);
         fflush(pFILE);
     }
-}
 
-
-void traverse(DoubleList<long> *doubleList, BTree *pTree) {
-    pTree->traverse(doubleList);
+    delete arr;
 }
 
 void writeElements(FILE *f, long size, StudentFactory *factory, BTree *btree) {
+    Student **students = (Student **) new Student[size];
     for (int i = 0; i < size; i++) {
-        Student *student = factory->getStochastic();
-        fwrite(student, STUDENT_SIZE, 1, f);
-        btree->insert(new Key(student));
+        students[i] = factory->getStochastic();
+        btree->insert(new Key(students[i]));
     }
+    fwrite(students, STUDENT_SIZE, size, f);
     fflush(f);
 }
 
-void readElements(FILE *f, long count) {
-        Student *students = new Student[count];
-        fread(students, STUDENT_SIZE, count, f);
-	for (int i = 0; i < count; i++) {
-		cout << students[i].toString() << endl;
-	}
-	delete[] students;
-        
-}
-
 Student *readElement(FILE *f, long index) {
-    fseek(f, (index * STUDENT_SIZE), SEEK_SET);
+    fseek(f, (index-1 * STUDENT_SIZE), SEEK_SET);
+    cout << ftell(f) << endl;
     Student *student = new Student();
-    fread(student, STUDENT_SIZE, 1, f);
+    cout << fread(student, STUDENT_SIZE, 1, f) << endl;
     return student;
 }

@@ -16,7 +16,9 @@ public:
      * Construtor que recebe os principais parâmetros.
      */
     Student(int _enrollNumber, std::string _name, double *_score, int _absence);
-    Student(){};
+    Student(){
+        enrollNumber = 0;
+    };
 
 private:
     /// Número da matrícula

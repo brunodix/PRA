@@ -18,6 +18,7 @@ class Key {
 		};
 
 		long traverse() {
+			//cout << student->getEnrollNumber() << endl;
 			return student->getEnrollNumber();
 		}
 		void init() {
@@ -151,9 +152,8 @@ void BTreeNode::traverse(DoubleList<long> *doubleList) {
         // traverse the subtree rooted with child C[i].
         if (leaf == false) {
 			child[i]->traverse(doubleList);
-			long value = keys[i]->traverse();
-			doubleList->add(new Node<long>(value));
 		}
+		doubleList->add(new Node<long>(keys[i]->traverse()));
     }
 
     // Print the subtree rooted with last child
@@ -170,8 +170,9 @@ void BTreeNode::traverse() {
 	for (i = 0; i < n; i++) {
 		// If this is not leaf, then before printing key[i],
 		// traverse the subtree rooted with child C[i].
-		if (leaf == false)
+		if (leaf == false) {
 			child[i]->traverse();
+		}
 		cout << " " << keys[i]->traverse();
 	}
 
@@ -206,7 +207,7 @@ void BTree::insert(Key *k) {
             // two children is going to have new key
             int i = 0;
 			//if (s->keys[0] < k)
-            if (fComparator(k, s->keys[0]) > 0 )
+            if (fComparator(s->keys[0], k) < 0 )
                 i++;
             s->child[i]->insertNonFull(k);
 
@@ -295,7 +296,7 @@ void BTreeNode::insertNonFull(Key *k) {
             // After split, the middle key of C[i] goes up and
             // C[i] is splitted into two.  See which of the two
             // is going to have the new key
-            if (keys[i + 1] < k)
+            if (fComparator(keys[i + 1], k) < 0)
                 i++;
         }
         child[i + 1]->insertNonFull(k);

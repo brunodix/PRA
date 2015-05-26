@@ -13,6 +13,8 @@ class  Node {
     Node *prior;
 public:
     Node(T value) {
+        next = NULL;
+        prior = NULL;
         setValue(value);
     };
     void setValue(T value){
