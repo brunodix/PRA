@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cmath>
 #include "student.h"
 #include "student_factory.h"
 #include "timer.h"
@@ -72,9 +71,9 @@ int main(int argc, char *argv[]) {
     int opcao;
     cin >> opcao;
     if (opcao == 1) {
-        btree = new BTree(8, comparatorName);
+        btree = new BTree(1000, comparatorName);
     } else {
-        btree = new BTree(8, comparatorAverage);
+        btree = new BTree(1000, comparatorAverage);
     }
 
     StudentFactory *factory = new StudentFactory();
@@ -96,7 +95,6 @@ int main(int argc, char *argv[]) {
     FILE *indexFile = fopen("index.bin", "wb+");
     DoubleList<long> *indexList = new DoubleList<long>();
     btree->traverse(indexList);
-    btree->clear();
     writeIndex(indexFile, indexList);
     delete indexList;
     indexList = new DoubleList<long>();
@@ -112,6 +110,8 @@ int main(int argc, char *argv[]) {
     // Le o que sobrou dos registros
     readElement(f, remaining);
 
+    btree->clear();
+    delete btree;
     fclose(f);
     fclose(indexFile);
 
@@ -148,12 +148,12 @@ void writeIndex(FILE *pFILE, DoubleList<long> *pList) {
 }
 
 void writeElements(FILE *f, long size, StudentFactory *factory, BTree *btree) {
-    Student **students = (Student **) new Student[size];
     for (int i = 0; i < size; i++) {
-        students[i] = factory->getStochastic();
-        btree->insert(new Key(students[i]));
+	Student *student = factory->getStochastic();
+        btree->insert(new Key(student));
+	fwrite(student, STUDENT_SIZE, 1, f);
+	delete student;
     }
-    fwrite(students, STUDENT_SIZE, size, f);
     fflush(f);
 }
 
