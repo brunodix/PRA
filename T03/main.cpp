@@ -26,16 +26,9 @@ int comparatorName(const void *key1, const void *key2) {
 int comparatorAverage(const void *key1, const void *key2) {
     Student *s1 = ((Key *) key1)->getStudent();
     Student *s2 = ((Key *) key2)->getStudent();
-//    if (s1->getAverage() < s2->getAverage()) {
-//        return -1;
-//    } else if (s1->getAverage() > s2->getAverage()) {
-//        return 1;
-//    } else {
-//        return 0;
-//    }
-    if (s1->getEnrollNumber() < s2->getEnrollNumber()) {
+    if (s1->getAverage() < s2->getAverage()) {
         return -1;
-    } else if (s1->getEnrollNumber() < s2->getEnrollNumber()) {
+    } else if (s1->getAverage() > s2->getAverage()) {
         return 1;
     } else {
         return 0;
