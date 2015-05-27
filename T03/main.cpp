@@ -25,9 +25,9 @@ int comparatorName(const void *key1, const void *key2) {
 int comparatorAverage(const void *key1, const void *key2) {
     Student *s1 = ((Key *) key1)->getStudent();
     Student *s2 = ((Key *) key2)->getStudent();
-    if (s1->getAverage() < s2->getAverage()) {
+    if (s1->getEnrollNumber() < s2->getEnrollNumber()) {
         return -1;
-    } else if (s1->getAverage() > s2->getAverage()) {
+    } else if (s1->getEnrollNumber() > s2->getEnrollNumber()) {
         return 1;
     } else {
         return 0;
@@ -100,6 +100,8 @@ int main(int argc, char *argv[]) {
     indexList = new DoubleList<long>();
     readIndex(indexFile, indexList);
 
+    readElement(f, 1);
+
     /// Executa a gravação
     for (int i = 0; i < iterations; i++) {
         Node<long> *node = indexList->getByIndex(i);
@@ -148,20 +150,21 @@ void writeIndex(FILE *pFILE, DoubleList<long> *pList) {
 }
 
 void writeElements(FILE *f, long size, StudentFactory *factory, BTree *btree) {
-
-    Student **student = (Student **)new Student[size];
+    cout << "file start position" << ftell(f) << endl;
     for (int i = 0; i < size; i++) {
-        student[i] = factory->getStochastic();
+        cout << "i" << i << endl;
+        Student *student = factory->getStochastic();
         btree->insert(new Key(student));
+        fwrite(&student, STUDENT_SIZE, size, f);
     }
-    fwrite(&student, STUDENT_SIZE, size, f);
     fflush(f);
+    cout << "file end position" << ftell(f) << endl;
 }
 
 Student *readElement(FILE *f, long index) {
-    fseek(f, (index-1 * STUDENT_SIZE), SEEK_SET);
+    fseek(f, ((index-1) * STUDENT_SIZE), SEEK_SET);
     cout << ftell(f) << endl;
     Student *student = new Student();
-    cout << fread(&student, STUDENT_SIZE, 1, f) << endl;
+    cout << fread(student, (size_t)STUDENT_SIZE, (size_t)1, f) << endl;
     return student;
 }
