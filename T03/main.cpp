@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <fstream>
 #include "student.h"
@@ -94,19 +95,25 @@ int main(int argc, char *argv[]) {
     FILE *indexFile = fopen("index.bin", "wb+");
     DoubleList<long> *indexList = new DoubleList<long>();
     btree->traverse(indexList);
-    writeIndex(indexFile, indexList);
-    delete indexList;
-    indexList = new DoubleList<long>();
-    readIndex(indexFile, indexList);
+    //writeIndex(indexFile, indexList);
+    //delete indexList;
+    //indexList = new DoubleList<long>();
+    //readIndex(indexFile, indexList);
 
     /// Executa a gravação
-    for (int i = 0; i < iterations; i++) {
-
-        Node<long> *node = indexList->getByIndex(i);
-        if (node != NULL) {
-            cout << readElement(f, indexList->getByIndex(i)->getValue())->toString() << endl;
-            readElement(f, remaining);
-        }
+    int i = 0;
+    while (i < indexList->getSize()) {
+	for (int j = 0; j < pageSize; j++) {
+	    i++;
+	    Node<long> *node = indexList->getByIndex(i);
+	    if (node != NULL) {
+		//cout << "::::" << j << "::::" << indexList->getByIndex(i*j);
+		//cout << "getIndex" << endl;
+		Student *student = readElement(f, indexList->getByIndex(i)->getValue());
+                cout << i << "::" << student->toString() << endl;
+	    }
+	}
+        getchar();
     }
     // Le o que sobrou dos registros
 
@@ -137,6 +144,7 @@ void writeIndex(FILE *pFILE, DoubleList<long> *pList) {
     if (n != NULL) {
         do {
             arr[count++] = n->getValue();
+	    cout << count << "::";
             n = n->getNext();
         } while (n != NULL);
         rewind(pFILE);
@@ -158,8 +166,8 @@ void writeElements(FILE *f, long size, StudentFactory *factory, BTree *btree) {
 
 Student *readElement(FILE *f, long index) {
     fseek(f, (index-1) * STUDENT_SIZE, SEEK_SET);
-    cout << ftell(f) << endl;
     Student *student = new Student();
     fread(student, STUDENT_SIZE, 1, f);
+    cout << endl;
     return student;
 }
