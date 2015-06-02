@@ -40,10 +40,6 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
 
-    StudentFactory *factory = new StudentFactory();
-    Timer *timer = new Timer();
-    timer->start();
-
     if (argc != 3) {
        cout << "Informe os parâmetros: <tamanho da pagina> <tamanho em Mib>" << endl;
        return 1;
@@ -68,11 +64,15 @@ int main(int argc, char *argv[]) {
     long iterations = regNum / pageSize;
     long remaining = regNum % pageSize;
 
+    StudentFactory *factory = new StudentFactory();
+    Timer *timer = new Timer();
+    timer->start();
+
     BTree *btree;
-//    cout << "Informe o tipo de ordenação:" << endl;
-//    cout << "1 - Nome, 2 - Média" <<endl;
+    cout << "Informe o tipo de ordenação:" << endl;
+    cout << "1 - Nome, 2 - Média" <<endl;
     int opcao;
-//    cin >> opcao;
+    cin >> opcao;
     if (opcao == 1) {
         btree = new BTree(1000, comparatorName);
     } else {
