@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "student.h"
 #include "student_factory.h"
 #include "timer.h"
@@ -8,8 +9,6 @@
 void writeElements(FILE *f, long size, StudentFactory *factory, BTree *btree);
 
 Student *readElement(FILE *f, long index);
-
-long *readIndex(FILE *pFILE);
 
 void writeIndex(FILE *pFILE, DoubleList<long> *pList);
 
@@ -25,9 +24,9 @@ int comparatorName(const void *key1, const void *key2) {
 int comparatorAverage(const void *key1, const void *key2) {
     Student *s1 = ((Key *) key1)->getStudent();
     Student *s2 = ((Key *) key2)->getStudent();
-    if (s1->getEnrollNumber() < s2->getEnrollNumber()) {
+    if (s1->getAverage() < s2->getAverage()) {
         return -1;
-    } else if (s1->getEnrollNumber() > s2->getEnrollNumber()) {
+    } else if (s1->getAverage() > s2->getAverage()) {
         return 1;
     } else {
         return 0;
@@ -40,6 +39,9 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
 
+    StudentFactory *factory = new StudentFactory();
+    Timer *timer = new Timer();
+    timer->start();
 
     if (argc != 3) {
        cout << "Informe os parâmetros: <tamanho da pagina> <tamanho em Mib>" << endl;
@@ -76,11 +78,8 @@ int main(int argc, char *argv[]) {
         btree = new BTree(1000, comparatorAverage);
     }
 
-    StudentFactory *factory = new StudentFactory();
-    Timer *timer = new Timer();
-    timer->start();
-
     FILE *f = fopen("data.bin", "wb+");
+
     /// Executa a gravação
     for (int i = 0; i < iterations; i++) {
         writeElements(f, pageSize, factory, btree);
@@ -90,7 +89,7 @@ int main(int argc, char *argv[]) {
 
     timer->stop();
     cout << "Tempo de gravação: " << timer->getSeconds() << "milisegundos" << endl;
-    rewind(f);
+    //rewind(f);
 
     FILE *indexFile = fopen("index.bin", "wb+");
     DoubleList<long> *indexList = new DoubleList<long>();
@@ -100,17 +99,16 @@ int main(int argc, char *argv[]) {
     indexList = new DoubleList<long>();
     readIndex(indexFile, indexList);
 
-    readElement(f, 1);
-
     /// Executa a gravação
     for (int i = 0; i < iterations; i++) {
+
         Node<long> *node = indexList->getByIndex(i);
         if (node != NULL) {
             cout << readElement(f, indexList->getByIndex(i)->getValue())->toString() << endl;
+            readElement(f, remaining);
         }
     }
     // Le o que sobrou dos registros
-    readElement(f, remaining);
 
     btree->clear();
     delete btree;
@@ -150,21 +148,18 @@ void writeIndex(FILE *pFILE, DoubleList<long> *pList) {
 }
 
 void writeElements(FILE *f, long size, StudentFactory *factory, BTree *btree) {
-    cout << "file start position" << ftell(f) << endl;
     for (int i = 0; i < size; i++) {
-        cout << "i" << i << endl;
         Student *student = factory->getStochastic();
         btree->insert(new Key(student));
-        fwrite(&student, STUDENT_SIZE, size, f);
+        fwrite(student, STUDENT_SIZE, 1, f);
     }
     fflush(f);
-    cout << "file end position" << ftell(f) << endl;
 }
 
 Student *readElement(FILE *f, long index) {
-    fseek(f, ((index-1) * STUDENT_SIZE), SEEK_SET);
+    fseek(f, (index-1) * STUDENT_SIZE, SEEK_SET);
     cout << ftell(f) << endl;
     Student *student = new Student();
-    cout << fread(student, (size_t)STUDENT_SIZE, (size_t)1, f) << endl;
+    fread(student, STUDENT_SIZE, 1, f);
     return student;
 }
